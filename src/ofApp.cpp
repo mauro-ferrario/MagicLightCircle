@@ -9,14 +9,14 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
   vector<ofVec2f> blobPos;
-  blobPos.push_back(ofVec2f(ofGetMouseX() - 100,ofGetMouseY() - 100));
+  blobPos.push_back(ofVec2f(ofGetMouseX() - magicCircle.radius,ofGetMouseY() - magicCircle.radius));
   magicCircle.update(blobPos);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
   ofPushMatrix();
-  ofTranslate(100, 100);
+  ofTranslate(magicCircle.radius, magicCircle.radius);
   magicCircle.draw();
   ofPopMatrix();
 }

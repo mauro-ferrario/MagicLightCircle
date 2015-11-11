@@ -10,7 +10,9 @@
 #define __MagicLightCircle__MagicLightCircle__
 
 #include "ofMain.h"
+#include "ofxGenericDmx.h"
 
+#define DMX_DATA_LENGTH 513
 
 class MagicPoint
 {
@@ -39,9 +41,15 @@ public:
     this->pos = pos;
   }
   
+  float getIntensity()
+  {
+    return intensity;
+  }
+  
   void  setIntensity(ofVec2f blobPos, float maxRadius)
   {
     float distance = pos.distance(blobPos);
+    distance = ofClamp(distance, 0, maxRadius);
     intensity = 1 - (distance/maxRadius);
   }
   
@@ -81,13 +89,17 @@ public:
   void                setup(int resolution);
   void                update(vector<ofVec2f> posBlobs);
   void                draw();
+  float               radius;
 
 private:
+  void                setupDMX();
+  void                sendDMX();
   void                addNewMagicPoint();
   void                setCircleResolution(int num);
   int                 totMagicPoints;
   vector<MagicPoint*> magicPoints;
-  float               radius;
+  DmxDevice*          dmxInterface_;
+  unsigned char       dmxData_[DMX_DATA_LENGTH];
 };
 
 #endif /* defined(__MagicLightCircle__MagicLightCircle__) */

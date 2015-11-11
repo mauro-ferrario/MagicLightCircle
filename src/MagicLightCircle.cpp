@@ -26,12 +26,13 @@ void MagicLightCircle::setCircleResolution(int num)
 
 void MagicLightCircle::setup(int resolution)
 {
-  radius = 100;
+  radius = 200;
   totMagicPoints = resolution;
   for(int a = 0; a < resolution; a++)
   {
     addNewMagicPoint();
   }
+  setupDMX();
 }
 
 void MagicLightCircle::addNewMagicPoint()
@@ -55,8 +56,12 @@ void MagicLightCircle::update(vector<ofVec2f> posBlobs)
   for(int a = 0; a < totMagicPoints; a++)
   {
     for(int i = 0; i < posBlobs.size(); i++)
+    {
       magicPoints[a]->setIntensity(posBlobs[i], radius);
+    }
+    dmxData_[a] = magicPoints[a]->getIntensity()*255;
   }
+  sendDMX();
 }
 
 void MagicLightCircle::draw()
@@ -69,9 +74,31 @@ void MagicLightCircle::draw()
   ofCircle(0, 0, 100);
   for(int a = 0; a < totMagicPoints; a++)
   {
-    
     magicPoints[a]->draw();
   }
   ofPopStyle();
   ofPopMatrix();
+}
+
+void MagicLightCircle::setupDMX()
+{
+  memset( dmxData_, 0, DMX_DATA_LENGTH );
+  dmxInterface_ = ofxGenericDmx::openFirstDevice();
+  if ( dmxInterface_ == 0 )
+    printf( "No Enttec Device Found\n" );
+  else
+    printf( "isOpen: %i\n", dmxInterface_->isOpen() );
+}
+
+void MagicLightCircle::sendDMX()
+{
+  //force first byte to zero (it is not a channel but DMX type info - start code)
+  dmxData_[0] = 0;
+  if ( ! dmxInterface_ || ! dmxInterface_->isOpen() ) {
+    printf( "Not updating, enttec device is not open.\n");
+  }
+  else{
+    //send the data to the dmx interface
+    dmxInterface_->writeDmx( dmxData_, DMX_DATA_LENGTH );
+  }
 }
