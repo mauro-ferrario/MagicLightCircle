@@ -26,7 +26,7 @@ public:
   
   void  setup()
   {
-    
+    intensity = 1;
   }
   
   void  update()
@@ -34,7 +34,23 @@ public:
     
   }
   
-  void  draw(ofVec2f pos)
+  void  setPos(ofVec2f pos)
+  {
+    this->pos = pos;
+  }
+  
+  void  setIntensity(ofVec2f blobPos, float maxRadius)
+  {
+    float distance = pos.distance(blobPos);
+    intensity = 1 - (distance/maxRadius);
+  }
+  
+  void  setId(int id)
+  {
+    this->id = id;
+  }
+  
+  void  draw()
   {
     ofPushMatrix();
     ofTranslate(pos);
@@ -43,15 +59,16 @@ public:
     ofSetColor(255);
     ofCircle(5,5,10,10);
     ofFill();
-    ofSetColor(255,0,0);
+    ofSetColor(255,0,0, intensity * 255);
     ofCircle(5,5,10,10);
     ofPopStyle();
     ofPopMatrix();
   }
   
 private:
-  int   id;
-  float intensity;
+  int     id;
+  float   intensity;
+  ofVec2f pos;
 };
 
 
@@ -62,15 +79,15 @@ public:
                       ~MagicLightCircle();
   
   void                setup(int resolution);
-  void                update();
+  void                update(vector<ofVec2f> posBlobs);
   void                draw();
 
 private:
   void                addNewMagicPoint();
   void                setCircleResolution(int num);
-  int                 resolution;
   int                 totMagicPoints;
   vector<MagicPoint*> magicPoints;
+  float               radius;
 };
 
 #endif /* defined(__MagicLightCircle__MagicLightCircle__) */
