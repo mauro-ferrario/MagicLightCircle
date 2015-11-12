@@ -40,7 +40,7 @@ void MagicLightCircle::updateOSC()
       point.z = m.getArgAsFloat(2);
       Blob tempBlob;
       tempBlob.point = point;
-      tempBlob.life = 10;
+      tempBlob.life = lightLife;
       if(pointPos+1>blobs.size())
         blobs.push_back(tempBlob);
       else
@@ -97,7 +97,7 @@ void MagicLightCircle::update(vector<Blob> _blobs)
     float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius);
     if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
       magicPoints[a]->setIntensity(_blobs[i].point, radius);
-    magicPoints[a]->intensity -= .05;
+    magicPoints[a]->intensity -= lightFadeOutSpeed;
     if(magicPoints[a]->intensity < 0)
       magicPoints[a]->intensity = 0;
     dmxData_[a] = magicPoints[a]->getIntensity()*255;
@@ -149,4 +149,27 @@ void MagicLightCircle::sendDMX()
     //send the data to the dmx interface
     dmxInterface_->writeDmx( dmxData_, DMX_DATA_LENGTH );
   }
+}
+
+ofParameterGroup* MagicLightCircle::getParameterGroup()
+{
+  if(!magicLightParams)
+  {
+    magicLightParams = new ofParameterGroup();
+  }
+  if(magicLightParams->getName() == "")
+  {
+    magicLightParams->setName("MagicLightCircle");
+//    kinectTrackingParams->add(roiPos.set("Roi pos", ofVec2f(0,0), ofVec2f(0,0), ofVec2f(kinect.width, kinect.height)));
+//    kinectTrackingParams->add(roiSize.set("Roi size", ofVec2f(10,10), ofVec2f(10,10), ofVec2f(kinect.width, kinect.height)));
+//    kinectTrackingParams->add(nearThreshold.set("Near Threshold", 218,0, 255));
+//    kinectTrackingParams->add(farThreshold.set("Far Threshold", 110,0, 255));
+//    kinectTrackingParams->add(minArea.set("Min area", 110,0, 1000));
+//    kinectTrackingParams->add(maxArea.set("Max area", 500,0, kinect.width * kinect.height));
+//    kinectTrackingParams->add(maxRadius.set("Max radius", 200,0, 500));
+//    kinectTrackingParams->add(maxPointToSend.set("Max point to send", 2,0, 10));
+    magicLightParams->add(lightLife.set("Light life", 10,0, 200));
+    magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
+  }
+  return magicLightParams;
 }

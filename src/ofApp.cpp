@@ -4,6 +4,8 @@
 void ofApp::setup(){
   ofBackground(0);
   magicCircle.setup(8);
+  gui.setup("Gui");
+  gui.add(*magicCircle.getParameterGroup());;
 }
 
 //--------------------------------------------------------------
@@ -15,10 +17,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-  ofPushMatrix();
-//  ofTranslate(magicCircle.radius, magicCircle.radius);
   magicCircle.draw();
-  ofPopMatrix();
+  gui.draw();
 }
 
 //--------------------------------------------------------------

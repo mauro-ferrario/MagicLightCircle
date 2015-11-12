@@ -103,6 +103,7 @@ public:
   void                update(vector<Blob> _blobs);
   void                draw();
   float               radius;
+  ofParameterGroup*   getParameterGroup();
 
 private:
   void                setupDMX();
@@ -117,6 +118,9 @@ private:
   void                setupOSC();
   void                updateOSC();
   vector<Blob>        blobs;
+  ofParameter<int>    lightLife;
+  ofParameter<float>  lightFadeOutSpeed;
+  ofParameterGroup*   magicLightParams;
 };
 
 #endif /* defined(__MagicLightCircle__MagicLightCircle__) */
