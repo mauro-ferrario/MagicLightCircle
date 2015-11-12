@@ -19,6 +19,36 @@ MagicLightCircle::~MagicLightCircle()
   
 }
 
+void MagicLightCircle::setupOSC()
+{
+  receiver.setup(12345);
+}
+
+void MagicLightCircle::updateOSC()
+{
+  while(receiver.hasWaitingMessages())
+  {
+    ofxOscMessage m;
+    receiver.getNextMessage(&m);
+    string address = m.getAddress();
+    if(address.find("newPoint") <= 10)
+    {
+      int pointPos = ofToInt(address.substr(10,1));
+      ofVec3f point;
+      point.x = (m.getArgAsFloat(0) * radius * 2);
+      point.y = (m.getArgAsFloat(1) * radius * 2);
+      point.z = m.getArgAsFloat(2);
+      Blob tempBlob;
+      tempBlob.point = point;
+      tempBlob.life = 10;
+      if(pointPos+1>blobs.size())
+        blobs.push_back(tempBlob);
+      else
+        blobs[pointPos] = tempBlob;
+    }
+  }
+}
+
 void MagicLightCircle::setCircleResolution(int num)
 {
   
@@ -33,6 +63,7 @@ void MagicLightCircle::setup(int resolution)
     addNewMagicPoint();
   }
   setupDMX();
+  setupOSC();
 }
 
 void MagicLightCircle::addNewMagicPoint()
@@ -43,23 +74,34 @@ void MagicLightCircle::addNewMagicPoint()
   cout << angle << endl;
   MagicPoint* p = new MagicPoint();
   ofVec2f pos;
-  pos.x = (cos(ofDegToRad(angle)) * radius);
-  pos.y = (sin(ofDegToRad(angle)) * radius);
+  pos.x = (cos(ofDegToRad(angle)) * radius) + radius;
+  pos.y = (sin(ofDegToRad(angle)) * radius) + radius;
   p->setPos(pos);
   p->setId(id);
   magicPoints.push_back(p);
   p = NULL;
 }
 
-void MagicLightCircle::update(vector<ofVec2f> posBlobs)
+void MagicLightCircle::update()
 {
-  for(int a = 0; a < totMagicPoints; a++)
+  updateOSC();
+  update(blobs);
+}
+
+void MagicLightCircle::update(vector<Blob> _blobs)
+{
+  for(int i = 0; i < _blobs.size(); i++)
   {
-    for(int i = 0; i < posBlobs.size(); i++)
-    {
-      magicPoints[a]->setIntensity(posBlobs[i], radius);
-    }
+   for(int a = 0; a < totMagicPoints; a++)
+   {
+    float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius);
+    if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
+      magicPoints[a]->setIntensity(_blobs[i].point, radius);
+    magicPoints[a]->intensity -= .05;
+    if(magicPoints[a]->intensity < 0)
+      magicPoints[a]->intensity = 0;
     dmxData_[a] = magicPoints[a]->getIntensity()*255;
+   }
   }
   sendDMX();
 }
@@ -68,16 +110,22 @@ void MagicLightCircle::draw()
 {
   ofPushStyle();
   ofNoFill();
-  ofRect(-radius,-radius,radius*2, radius*2);
+  ofRect(0,0,radius*2, radius*2);
   ofSetColor(255);
-  ofPushMatrix();
-  ofCircle(0, 0, 100);
+  ofCircle(radius, radius, radius);
   for(int a = 0; a < totMagicPoints; a++)
   {
     magicPoints[a]->draw();
   }
+  for(int a = 0; a < blobs.size(); a++)
+  {
+    if(blobs[a].life > 0)
+    {
+      ofCircle(blobs[a].point.x, blobs[a].point.y, 10);
+      blobs[a].life--;
+    }
+  }
   ofPopStyle();
-  ofPopMatrix();
 }
 
 void MagicLightCircle::setupDMX()
