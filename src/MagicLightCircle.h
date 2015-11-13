@@ -55,7 +55,7 @@ public:
   float calculateIntensity(ofVec2f blobPos, float maxRadius)
   {
     float distance = pos.distance(blobPos);
-    distance = ofClamp(distance, 0, maxRadius * 1.5);
+    distance = ofClamp(distance, 0, maxRadius);
     return (1 - (distance/maxRadius));
   }
   
