@@ -9,7 +9,6 @@
 #include "MagicLightCircle.h"
 
 
-
 MagicLightCircle::MagicLightCircle()
 {
 }
