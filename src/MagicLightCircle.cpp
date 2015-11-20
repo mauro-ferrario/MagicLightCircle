@@ -61,6 +61,14 @@ void MagicLightCircle::setup(int resolution)
   {
     addNewMagicPoint();
   }
+  magicPoints[0]->setOutputPort(2);
+  magicPoints[1]->setOutputPort(0);
+  magicPoints[2]->setOutputPort(3);
+  magicPoints[3]->setOutputPort(4);
+  magicPoints[4]->setOutputPort(5);
+  magicPoints[5]->setOutputPort(8);
+  magicPoints[6]->setOutputPort(1);
+  magicPoints[7]->setOutputPort(7);
   setupDMX();
   setupOSC();
 }
@@ -99,7 +107,7 @@ void MagicLightCircle::update(vector<Blob> _blobs)
     magicPoints[a]->intensity -= lightFadeOutSpeed;
     if(magicPoints[a]->intensity < 0)
       magicPoints[a]->intensity = 0;
-    dmxData_[a] = magicPoints[a]->getIntensity()*255;
+    dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
    }
   }
   sendDMX();
