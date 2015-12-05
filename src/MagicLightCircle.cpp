@@ -129,7 +129,7 @@ void MagicLightCircle::draw()
   
   for(int a = 0; a < totMagicPoints; a++)
   {
-    magicPoints[a]->draw();
+    magicPoints[a]->draw(radius*percMaxDistanceCircle);
   }
   for(int a = 0; a < blobs.size(); a++)
   {

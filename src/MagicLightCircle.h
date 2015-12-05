@@ -82,19 +82,19 @@ public:
     return outputPort;
   }
   
-  void  draw()
+  void  draw(float radius)
   {
     ofPushMatrix();
     ofTranslate(pos);
     ofPushStyle();
     ofNoFill();
     ofSetColor(255);
-    ofCircle(5,5,10,10);
+    ofCircle(5,5,10,radius);
     ofFill();
     ofDrawBitmapString(ofToString(id), 14, 14);
     ofFill();
     ofSetColor(255,0,0, intensity * 255);
-    ofCircle(5,5,10,10);
+    ofCircle(5,5,10,radius);
     ofPopStyle();
     ofPopMatrix();
   }
