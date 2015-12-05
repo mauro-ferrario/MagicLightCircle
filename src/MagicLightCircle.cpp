@@ -98,13 +98,18 @@ void MagicLightCircle::update()
 
 void MagicLightCircle::update(vector<Blob> _blobs)
 {
+  ofPoint center = ofPoint(radius, radius);
   for(int i = 0; i < _blobs.size(); i++)
   {
    for(int a = 0; a < totMagicPoints; a++)
    {
-    float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius);
+    float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
     if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
-      magicPoints[a]->setIntensity(_blobs[i].point, radius);
+    {
+//      if(magicPoints[a]->getDistance(_blobs[i].point) < 10)
+        if(center.distance(_blobs[i].point) > radius*.85)
+          magicPoints[a]->setIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
+    }
     magicPoints[a]->intensity -= lightFadeOutSpeed;
     if(magicPoints[a]->intensity < 0)
       magicPoints[a]->intensity = 0;
