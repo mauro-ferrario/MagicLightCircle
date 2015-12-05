@@ -53,6 +53,11 @@ public:
     intensity = calculateIntensity(blobPos, maxRadius, percMaxDistanceCircle);
   }
   
+  void setIntensity(float _intensity)
+  {
+    intensity = _intensity;
+  }
+  
   float getDistance(ofVec2f blobPos)
   {
     return pos.distance(blobPos);
