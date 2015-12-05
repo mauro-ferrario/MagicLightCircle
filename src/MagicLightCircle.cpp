@@ -37,6 +37,7 @@ void MagicLightCircle::updateOSC()
       point.x = (m.getArgAsFloat(0) * radius * 2);
       point.y = (m.getArgAsFloat(1) * radius * 2);
       point.z = m.getArgAsFloat(2);
+      point.z = 0;
       Blob tempBlob;
       tempBlob.point = point;
       tempBlob.life = lightLife;
