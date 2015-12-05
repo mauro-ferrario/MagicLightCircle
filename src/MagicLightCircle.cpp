@@ -134,7 +134,9 @@ void MagicLightCircle::draw()
   ofNoFill();
   ofRect(0,0,radius*2, radius*2);
   ofSetColor(255);
+  ofCircle(radius, radius, radius*.85);
   ofCircle(radius, radius, radius);
+  
   for(int a = 0; a < totMagicPoints; a++)
   {
     magicPoints[a]->draw();
