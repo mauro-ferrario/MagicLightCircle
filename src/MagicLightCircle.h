@@ -155,6 +155,7 @@ private:
   ofParameter<float>  lightFadeOutSpeed;
   ofParameter<float>  percInnerRadius;
   ofParameter<float>  percMaxDistanceCircle;
+  ofParameter<bool>   useDepthForIntensity;
   ofParameterGroup*   magicLightParams;
 };
 

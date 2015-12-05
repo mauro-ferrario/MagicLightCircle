@@ -36,7 +36,6 @@ void MagicLightCircle::updateOSC()
       point.x = (m.getArgAsFloat(0) * radius * 2);
       point.y = (m.getArgAsFloat(1) * radius * 2);
       point.z = m.getArgAsFloat(2);
-      point.z = 0;
       Blob tempBlob;
       tempBlob.point = point;
       tempBlob.life = lightLife;
@@ -101,15 +100,16 @@ void MagicLightCircle::update(vector<Blob> _blobs)
   ofPoint center = ofPoint(radius, radius);
   for(int i = 0; i < _blobs.size(); i++)
   {
+   ofVec2f pointWithNoZ = ofVec2f(_blobs[i].point.x, _blobs[i].point.y);
    for(int a = 0; a < totMagicPoints; a++)
    {
-    float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
+    float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
     if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
-    {
-      if(center.distance(_blobs[i].point) > radius*percInnerRadius)
+    {;
+      if(center.distance(pointWithNoZ) > radius*percInnerRadius)
       {
         magicPoints[a]->setActive(true);
-        magicPoints[a]->setIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
+        magicPoints[a]->setIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
       }
       else
       {
@@ -183,8 +183,9 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->setName("MagicLightCircle");
     magicLightParams->add(lightLife.set("Light life", 10,0, 200));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
-    magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .5,0, 1));
+    magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
+    magicLightParams->add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
   }
   return magicLightParams;
 }
