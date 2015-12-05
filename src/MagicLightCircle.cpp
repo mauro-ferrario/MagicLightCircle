@@ -104,12 +104,15 @@ void MagicLightCircle::update(vector<Blob> _blobs)
    for(int a = 0; a < totMagicPoints; a++)
    {
     float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
-    if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
-    {;
+    if((tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)||useDepthForIntensity)
+    {
       if(center.distance(pointWithNoZ) > radius*percInnerRadius)
       {
         magicPoints[a]->setActive(true);
-        magicPoints[a]->setIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
+        if(useDepthForIntensity)
+          magicPoints[a]->setIntensity(_blobs[i].point.z);
+        else
+          magicPoints[a]->setIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
       }
       else
       {
