@@ -47,14 +47,21 @@ public:
     return intensity;
   }
   
-  void  setIntensity(ofVec2f blobPos, float maxRadius)
+  void  setIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
   {
-    intensity = calculateIntensity(blobPos, maxRadius);
+    intensity = calculateIntensity(blobPos, maxRadius, percMaxDistanceCircle);
   }
   
-  float calculateIntensity(ofVec2f blobPos, float maxRadius)
+  float getDistance(ofVec2f blobPos)
   {
-    float distance = pos.distance(blobPos);
+    return pos.distance(blobPos);
+  }
+  
+  float calculateIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
+  {
+    float distance = getDistance(blobPos);
+    if(distance > maxRadius*percMaxDistanceCircle)
+      return 0;
     distance = ofClamp(distance, 0, maxRadius);
     return (1 - (distance/maxRadius));
   }
@@ -134,6 +141,7 @@ private:
   vector<Blob>        blobs;
   ofParameter<int>    lightLife;
   ofParameter<float>  lightFadeOutSpeed;
+  ofParameter<float>  percMaxDistanceCircle;
   ofParameterGroup*   magicLightParams;
 };
 
