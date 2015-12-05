@@ -3,9 +3,11 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
   ofBackground(0);
-  magicCircle.setup(8);
+  magicCircle.setup(24);
   gui.setup("Gui");
+  gui.setPosition(ofPoint(400,0));
   gui.add(*magicCircle.getParameterGroup());;
+  ofSetWindowPosition(0, 0);
 }
 
 //--------------------------------------------------------------
