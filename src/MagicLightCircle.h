@@ -30,6 +30,7 @@ public:
   void  setup()
   {
     intensity = 1;
+    active    = false;
   }
   
   void  update()
@@ -60,7 +61,7 @@ public:
   float calculateIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
   {
     float distance = getDistance(blobPos);
-    if(distance > maxRadius*percMaxDistanceCircle)
+    if(distance > maxRadius*percMaxDistanceCircle)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori
       return 0;
     distance = ofClamp(distance, 0, maxRadius);
     return (1 - (distance/maxRadius));
@@ -80,6 +81,16 @@ public:
   int getOutputPort()
   {
     return outputPort;
+  }
+  
+  bool getActive()
+  {
+    return active;
+  }
+  
+  void setActive(bool _active)
+  {
+    active = _active;
   }
   
   void  draw(float radius)
@@ -104,6 +115,7 @@ private:
   int     id;
   int     outputPort;
   ofVec2f pos;
+  bool    active;
 };
 
 
