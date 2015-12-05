@@ -106,8 +106,7 @@ void MagicLightCircle::update(vector<Blob> _blobs)
     float tempIntensity = magicPoints[a]->calculateIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
     if(tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)
     {
-//      if(magicPoints[a]->getDistance(_blobs[i].point) < 10)
-        if(center.distance(_blobs[i].point) > radius*.85)
+        if(center.distance(_blobs[i].point) > radius*percInnerRadius)
           magicPoints[a]->setIntensity(_blobs[i].point, radius, percMaxDistanceCircle);
     }
     magicPoints[a]->intensity -= lightFadeOutSpeed;
@@ -125,7 +124,7 @@ void MagicLightCircle::draw()
   ofNoFill();
   ofRect(0,0,radius*2, radius*2);
   ofSetColor(255);
-  ofCircle(radius, radius, radius*.85);
+  ofCircle(radius, radius, radius*percInnerRadius);
   ofCircle(radius, radius, radius);
   
   for(int a = 0; a < totMagicPoints; a++)
@@ -175,17 +174,10 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
   if(magicLightParams->getName() == "")
   {
     magicLightParams->setName("MagicLightCircle");
-//    kinectTrackingParams->add(roiPos.set("Roi pos", ofVec2f(0,0), ofVec2f(0,0), ofVec2f(kinect.width, kinect.height)));
-//    kinectTrackingParams->add(roiSize.set("Roi size", ofVec2f(10,10),   ofVec2f(10,10), ofVec2f(kinect.width, kinect.height)));
-//    kinectTrackingParams->add(nearThreshold.set("Near Threshold", 218,0, 255));
-//    kinectTrackingParams->add(farThreshold.set("Far Threshold", 110,0, 255));
-//    kinectTrackingParams->add(minArea.set("Min area", 110,0, 1000));
-//    kinectTrackingParams->add(maxArea.set("Max area", 500,0, kinect.width * kinect.height));
-//    kinectTrackingParams->add(maxRadius.set("Max radius", 200,0, 500));
-//    kinectTrackingParams->add(maxPointToSend.set("Max point to send", 2,0, 10));
     magicLightParams->add(lightLife.set("Light life", 10,0, 200));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .5,0, 1));
+    magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
   }
   return magicLightParams;
 }

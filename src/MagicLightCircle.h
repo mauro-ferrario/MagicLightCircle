@@ -141,6 +141,7 @@ private:
   vector<Blob>        blobs;
   ofParameter<int>    lightLife;
   ofParameter<float>  lightFadeOutSpeed;
+  ofParameter<float>  percInnerRadius;
   ofParameter<float>  percMaxDistanceCircle;
   ofParameterGroup*   magicLightParams;
 };
