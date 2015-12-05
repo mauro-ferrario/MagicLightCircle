@@ -69,17 +69,8 @@ void MagicLightCircle::setup(int resolution)
     int pos = a;
     if(pos < 0)
       pos = pos+totMagicPoints;
-    cout << "A = " << pos << endl;
     magicPoints[pos]->setOutputPort(cont++);
   }
-//  magicPoints[0]->setOutputPort(2);
-//  magicPoints[1]->setOutputPort(0);
-//  magicPoints[2]->setOutputPort(3);
-//  magicPoints[3]->setOutputPort(4);
-//  magicPoints[4]->setOutputPort(5);
-//  magicPoints[5]->setOutputPort(8);
-//  magicPoints[6]->setOutputPort(1);
-//  magicPoints[7]->setOutputPort(7);
   setupDMX();
   setupOSC();
 }
