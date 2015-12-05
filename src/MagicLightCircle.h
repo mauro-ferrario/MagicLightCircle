@@ -61,7 +61,7 @@ public:
   float calculateIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
   {
     float distance = getDistance(blobPos);
-    if(distance > maxRadius*percMaxDistanceCircle)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori
+    if(distance > maxRadius*percMaxDistanceCircle)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori. Forse è per questo motivo che la luce si attiva rapidamente
       return 0;
     distance = ofClamp(distance, 0, maxRadius);
     return (1 - (distance/maxRadius));
