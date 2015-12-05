@@ -185,7 +185,7 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
   {
     magicLightParams->setName("MagicLightCircle");
 //    kinectTrackingParams->add(roiPos.set("Roi pos", ofVec2f(0,0), ofVec2f(0,0), ofVec2f(kinect.width, kinect.height)));
-//    kinectTrackingParams->add(roiSize.set("Roi size", ofVec2f(10,10), ofVec2f(10,10), ofVec2f(kinect.width, kinect.height)));
+//    kinectTrackingParams->add(roiSize.set("Roi size", ofVec2f(10,10),   ofVec2f(10,10), ofVec2f(kinect.width, kinect.height)));
 //    kinectTrackingParams->add(nearThreshold.set("Near Threshold", 218,0, 255));
 //    kinectTrackingParams->add(farThreshold.set("Far Threshold", 110,0, 255));
 //    kinectTrackingParams->add(minArea.set("Min area", 110,0, 1000));
@@ -194,6 +194,7 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
 //    kinectTrackingParams->add(maxPointToSend.set("Max point to send", 2,0, 10));
     magicLightParams->add(lightLife.set("Light life", 10,0, 200));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
+    magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .5,0, 1));
   }
   return magicLightParams;
 }
