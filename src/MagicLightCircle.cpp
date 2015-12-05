@@ -116,7 +116,8 @@ void MagicLightCircle::update(vector<Blob> _blobs)
         magicPoints[a]->setActive(false);
       }
     }
-    magicPoints[a]->intensity -= lightFadeOutSpeed;
+    if(!magicPoints[a]->getActive())
+      magicPoints[a]->intensity -= lightFadeOutSpeed;
     if(magicPoints[a]->intensity < 0)
       magicPoints[a]->intensity = 0;
     dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
