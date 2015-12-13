@@ -249,15 +249,24 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
   }
   if(magicLightParams->getName() == "")
   {
+    ofParameterGroup depthGroup;
+    ofParameterGroup oscGroup;
+    ofParameterGroup soundGroup;
+    depthGroup.setName("Depth group");
+    oscGroup.setName("OSC group");
+    soundGroup.setName("Sound group");
     magicLightParams->setName("MagicLightCircle");
     magicLightParams->add(lightLife.set("Light life", 10,0, 200));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
-    magicLightParams->add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
-    magicLightParams->add(useOSC.set("Use OSC hFor Intensity", false));
-    magicLightParams->add(useSound.set("Use sound hFor Intensity", false));
-    magicLightParams->add(audioMultiplier.set("Audio Multiplier", 1.00,0.00, 5.00));
+    depthGroup.add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
+    oscGroup.add(useOSC.set("Use OSC hFor Intensity", false));
+    soundGroup.add(useSound.set("Use sound hFor Intensity", false));
+    soundGroup.add(audioMultiplier.set("Audio Multiplier", 1.00,0.00, 5.00));
+    magicLightParams->add(depthGroup);
+    magicLightParams->add(oscGroup);
+    magicLightParams->add(soundGroup);
   }
   return magicLightParams;
 }
