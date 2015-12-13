@@ -142,6 +142,7 @@ void MagicLightCircle::update()
   if(useSound)
     updateSound();
   sendDMX();
+  checkLightInputControllerChanged();
 }
 
 void MagicLightCircle::updateSound()
@@ -239,6 +240,28 @@ void MagicLightCircle::sendDMX()
     //send the data to the dmx interface
     dmxInterface_->writeDmx( dmxData_, DMX_DATA_LENGTH );
   }
+}
+
+void MagicLightCircle::checkLightInputControllerChanged()
+{
+  if(prevUseSound != useSound)
+  {
+    useOSC = false;
+    useDepthForIntensity = false;
+  }
+  else if(prevUseDepthForIntensity != useDepthForIntensity)
+  {
+    useOSC = false;
+    useSound = false;
+  }
+  else if(prevUseOSC != useOSC)
+  {
+    useDepthForIntensity = false;
+    useSound = false;
+  }  
+  prevUseDepthForIntensity = useDepthForIntensity;
+  prevUseOSC = useOSC;
+  prevUseSound = useSound;
 }
 
 ofParameterGroup* MagicLightCircle::getParameterGroup()

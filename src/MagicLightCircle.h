@@ -166,7 +166,11 @@ private:
   ofParameter<bool>   useSound;
   ofParameter<float>  audioMultiplier;
   ofParameterGroup*   magicLightParams;
+  bool                prevUseDepthForIntensity;
+  bool                prevUseOSC;
+  bool                prevUseSound;
   void                audioIn(float * input, int bufferSize, int nChannels);
+  void                checkLightInputControllerChanged();
   void                updateSound();
   vector<float>       left;
 	vector<float>       right;
