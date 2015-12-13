@@ -130,7 +130,7 @@ struct Blob
   int     life;
 };
 
-class MagicLightCircle
+class MagicLightCircle: public ofBaseApp
 {
 public:
                       MagicLightCircle();
@@ -144,6 +144,7 @@ public:
   ofParameterGroup*   getParameterGroup();
 
 private:
+  void                setupAudio();
   void                setupDMX();
   void                sendDMX();
   void                addNewMagicPoint();
@@ -162,7 +163,20 @@ private:
   ofParameter<float>  percMaxDistanceCircle;
   ofParameter<bool>   useDepthForIntensity;
   ofParameter<bool>   useOSC;
+  ofParameter<bool>   useSound;
+  ofParameter<float>  audioMultiplier;
   ofParameterGroup*   magicLightParams;
+  void                audioIn(float * input, int bufferSize, int nChannels);
+  void                updateSound();
+  vector<float>       left;
+	vector<float>       right;
+  vector<float>       volHistory;
+  int                 bufferCounter;
+  int                 drawCounter;
+	float               smoothedVol;
+  float               scaledVol;
+  ofSoundStream       soundStream;
+
 };
 
 #endif /* defined(__MagicLightCircle__MagicLightCircle__) */

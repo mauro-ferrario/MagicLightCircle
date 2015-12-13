@@ -22,6 +22,42 @@ void MagicLightCircle::setupOSC()
   receiver.setup(12345);
 }
 
+
+void MagicLightCircle::setupAudio()
+{
+  int bufferSize = 256;
+  left.assign(bufferSize, 0.0);
+  right.assign(bufferSize, 0.0);
+  volHistory.assign(400, 0.0);
+  bufferCounter	= 0;
+  drawCounter		= 0;
+  smoothedVol     = 0.0;
+  scaledVol		= 0.0;
+  soundStream.setup(this, 0, 2, 44100, bufferSize, 4);
+}
+
+void MagicLightCircle::audioIn(float * input, int bufferSize, int nChannels)
+{
+  float curVol = 0.0;
+  // samples are "interleaved"
+  int numCounted = 0;
+  //lets go through each sample and calculate the root mean square which is a rough way to calculate volume
+  for (int i = 0; i < bufferSize; i++){
+    left[i]		= input[i*2]*0.5;
+    right[i]	= input[i*2+1]*0.5;
+    curVol += left[i] * left[i];
+    curVol += right[i] * right[i];
+    numCounted+=2;
+  }
+  //this is how we get the mean of rms :)
+  curVol /= (float)numCounted;
+  // this is how we get the root of rms :)
+  curVol = sqrt( curVol );
+  smoothedVol *= 0.93;
+  smoothedVol += 0.07 * curVol;
+  bufferCounter++;
+}
+
 void MagicLightCircle::updateOSC()
 {
   while(receiver.hasWaitingMessages())
@@ -49,7 +85,7 @@ void MagicLightCircle::updateOSC()
       for(int a = 0; a < totMagicPoints; a++)
       {
         magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
-        dmxData_[magicPoints[a]->getOutputPort()+1] = m.getArgAsInt32(a);
+        dmxData_[magicPoints[a]->getOutputPort()+1] =  magicPoints[a]->intensity * 255; //m.getArgAsInt32(a);
       }
     }
   }
@@ -80,6 +116,7 @@ void MagicLightCircle::setup(int resolution)
   }
   setupDMX();
   setupOSC();
+  setupAudio();
 }
 
 void MagicLightCircle::addNewMagicPoint()
@@ -102,7 +139,26 @@ void MagicLightCircle::update()
   updateOSC();
   if(!useOSC)
     update(blobs);
+  if(useSound)
+    updateSound();
   sendDMX();
+}
+
+void MagicLightCircle::updateSound()
+{
+  int step = right.size()/totMagicPoints;
+  for (unsigned int i = 0; i < left.size(); i+=step)
+  {
+    int pos = ofMap(i,0,left.size(), 0, (totMagicPoints*.5) + 1, true);
+    magicPoints[pos]->intensity = left[i] * audioMultiplier;
+    dmxData_[magicPoints[pos]->getOutputPort()+1] = magicPoints[pos]->intensity * 255;
+  }
+  for (unsigned int i = 0; i < right.size(); i+=step)
+  {
+    int pos = ofMap(i,0,right.size(), (totMagicPoints*.5) + 1, totMagicPoints, true);
+    magicPoints[pos]->intensity = right[i] * audioMultiplier;
+    dmxData_[magicPoints[pos]->getOutputPort()+1] = magicPoints[pos]->intensity * 255;
+  }
 }
 
 void MagicLightCircle::update(vector<Blob> _blobs)
@@ -200,6 +256,8 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
     magicLightParams->add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
     magicLightParams->add(useOSC.set("Use OSC hFor Intensity", false));
+    magicLightParams->add(useSound.set("Use sound hFor Intensity", false));
+    magicLightParams->add(audioMultiplier.set("Audio Multiplier", 1.00,0.00, 5.00));
   }
   return magicLightParams;
 }
