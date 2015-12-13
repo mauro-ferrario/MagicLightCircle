@@ -283,9 +283,9 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
-    depthGroup.add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
-    oscGroup.add(useOSC.set("Use OSC hFor Intensity", false));
-    soundGroup.add(useSound.set("Use sound hFor Intensity", false));
+    depthGroup.add(useDepthForIntensity.set("Use Dept For Intensity", false));
+    oscGroup.add(useOSC.set("Use OSC For Intensity", false));
+    soundGroup.add(useSound.set("Use sound For Intensity", false));
     soundGroup.add(audioMultiplier.set("Audio Multiplier", 1.00,0.00, 5.00));
     magicLightParams->add(depthGroup);
     magicLightParams->add(oscGroup);
