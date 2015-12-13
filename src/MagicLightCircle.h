@@ -161,6 +161,7 @@ private:
   ofParameter<float>  percInnerRadius;
   ofParameter<float>  percMaxDistanceCircle;
   ofParameter<bool>   useDepthForIntensity;
+  ofParameter<bool>   useOSC;
   ofParameterGroup*   magicLightParams;
 };
 

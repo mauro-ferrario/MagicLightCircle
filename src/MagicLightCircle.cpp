@@ -44,6 +44,14 @@ void MagicLightCircle::updateOSC()
       else
         blobs[pointPos] = tempBlob;
     }
+    if(address == "ControlLight" && useOSC)
+    {
+      for(int a = 0; a < totMagicPoints; a++)
+      {
+        magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
+        dmxData_[magicPoints[a]->getOutputPort()+1] = m.getArgAsInt32(a);
+      }
+    }
   }
 }
 
@@ -92,7 +100,9 @@ void MagicLightCircle::addNewMagicPoint()
 void MagicLightCircle::update()
 {
   updateOSC();
-  update(blobs);
+  if(!useOSC)
+    update(blobs);
+  sendDMX();
 }
 
 void MagicLightCircle::update(vector<Blob> _blobs)
@@ -126,7 +136,6 @@ void MagicLightCircle::update(vector<Blob> _blobs)
     dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
    }
   }
-  sendDMX();
 }
 
 void MagicLightCircle::draw()
@@ -190,6 +199,7 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
     magicLightParams->add(useDepthForIntensity.set("Use Dept hFor Intensity", false));
+    magicLightParams->add(useOSC.set("Use OSC hFor Intensity", false));
   }
   return magicLightParams;
 }
