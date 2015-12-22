@@ -72,6 +72,7 @@ void MagicLightCircle::updateOSC()
       point.x = (m.getArgAsFloat(0) * radius * 2);
       point.y = (m.getArgAsFloat(1) * radius * 2);
       point.z = m.getArgAsFloat(2);
+      cout << point.z << endl;
       Blob tempBlob;
       tempBlob.point = point;
       tempBlob.life = lightLife;
@@ -170,20 +171,21 @@ void MagicLightCircle::update(vector<Blob> _blobs)
    ofVec2f pointWithNoZ = ofVec2f(_blobs[i].point.x, _blobs[i].point.y);
    for(int a = 0; a < totMagicPoints; a++)
    {
-    float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
+    /// Se non ci sono i blob non faccio l'update... non so se è giusto...
+    magicPoints[a]->update(_blobs[i].point);
+    magicPoints[a]->radius = radius * percMaxDistanceCircle;
+    float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ);
     if((tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)||useDepthForIntensity)
     {
-      if(center.distance(pointWithNoZ) > radius*percInnerRadius)
+      if(magicPoints[a]->getActive())
       {
-        magicPoints[a]->setActive(true);
+        // Testare... quando il blob sparisce e non riceve nuovi OSC, nel vector di blob rimangono comunque i dati. Magari fare un conteggio sul tempo in cui la posione rimane identica e se dura troppo, far morire il blog
+//        cout << "BLOB " << i << " = " << _blobs[i].point << endl;
+        cout << float(_blobs[i].point.z/255) << endl;
         if(useDepthForIntensity)
-          magicPoints[a]->setIntensity(_blobs[i].point.z);
+          magicPoints[a]->setIntensity(float(_blobs[i].point.z/255));
         else
-          magicPoints[a]->setIntensity(pointWithNoZ, radius, percMaxDistanceCircle);
-      }
-      else
-      {
-        magicPoints[a]->setActive(false);
+          magicPoints[a]->setIntensity(pointWithNoZ);
       }
     }
     if(!magicPoints[a]->getActive())
@@ -201,12 +203,11 @@ void MagicLightCircle::draw()
   ofNoFill();
   ofRect(0,0,radius*2, radius*2);
   ofSetColor(255);
-  ofCircle(radius, radius, radius*percInnerRadius);
   ofCircle(radius, radius, radius);
   
   for(int a = 0; a < totMagicPoints; a++)
   {
-    magicPoints[a]->draw(radius*percMaxDistanceCircle);
+    magicPoints[a]->draw();
   }
   for(int a = 0; a < blobs.size(); a++)
   {
@@ -282,7 +283,6 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(lightLife.set("Light life", 10,0, 200));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
-    magicLightParams->add(percInnerRadius.set("Perc Inner Radius", .85,0, 1));
     depthGroup.add(useDepthForIntensity.set("Use Dept For Intensity", false));
     oscGroup.add(useOSC.set("Use OSC For Intensity", false));
     soundGroup.add(useSound.set("Use sound For Intensity", false));

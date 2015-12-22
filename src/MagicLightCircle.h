@@ -33,9 +33,16 @@ public:
     active    = false;
   }
   
-  void  update()
+  void update(ofVec2f pos)
   {
-    
+    if(getDistance(pos) < radius)
+    {
+      setActive(true);
+    }
+    else
+    {
+      setActive(false);
+    }
   }
   
   void  setPos(ofVec2f pos)
@@ -48,9 +55,9 @@ public:
     return intensity;
   }
   
-  void  setIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
+  void  setIntensity(ofVec2f blobPos)
   {
-    intensity = calculateIntensity(blobPos, maxRadius, percMaxDistanceCircle);
+    intensity = calculateIntensity(blobPos);
   }
   
   void setIntensity(float _intensity)
@@ -63,13 +70,13 @@ public:
     return pos.distance(blobPos);
   }
   
-  float calculateIntensity(ofVec2f blobPos, float maxRadius, float percMaxDistanceCircle)
+  float calculateIntensity(ofVec2f blobPos)
   {
     float distance = getDistance(blobPos);
-    if(distance > maxRadius*percMaxDistanceCircle)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori. Forse è per questo motivo che la luce si attiva rapidamente
+    if(distance > radius)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori. Forse è per questo motivo che la luce si attiva rapidamente
       return 0;
-    distance = ofClamp(distance, 0, maxRadius);
-    return (1 - (distance/maxRadius));
+    distance = ofClamp(distance, 0, radius);
+    return (1 - (distance/radius));
   }
   
   void  setId(int id)
@@ -98,7 +105,7 @@ public:
     active = _active;
   }
   
-  void  draw(float radius)
+  void  draw()
   {
     ofPushMatrix();
     ofTranslate(pos);
@@ -115,6 +122,7 @@ public:
     ofPopMatrix();
   }
   
+  float   radius;
   float   intensity;
 private:
   int     id;
@@ -159,7 +167,6 @@ private:
   vector<Blob>        blobs;
   ofParameter<int>    lightLife;
   ofParameter<float>  lightFadeOutSpeed;
-  ofParameter<float>  percInnerRadius;
   ofParameter<float>  percMaxDistanceCircle;
   ofParameter<bool>   useDepthForIntensity;
   ofParameter<bool>   useOSC;
