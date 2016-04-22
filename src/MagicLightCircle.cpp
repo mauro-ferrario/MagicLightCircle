@@ -7,6 +7,7 @@
 //
 
 #include "MagicLightCircle.h"
+#include "ofApp.h"
 
 MagicLightCircle::MagicLightCircle()
 {
@@ -137,10 +138,10 @@ void MagicLightCircle::updateOSC()
       point.x = (m.getArgAsFloat(0) * radius * 2);
       point.y = (m.getArgAsFloat(1) * radius * 2);
       point.z = m.getArgAsFloat(2);
-      cout << point.z << endl;
+//      cout << point.z << endl;
       Blob tempBlob;
       tempBlob.point = point;
-      tempBlob.life = lightLife;
+      tempBlob.life = MAX_DURATION_FRAMES_BLOB_WITH_NO_INTERACTION;
       if(pointPos+1>blobs.size())
         blobs.push_back(tempBlob);
       else
@@ -150,11 +151,18 @@ void MagicLightCircle::updateOSC()
     {
       for(int a = 0; a < totMagicPoints; a++)
       {
-        magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
+//        magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
         dmxData_[magicPoints[a]->getOutputPort()+1] =  magicPoints[a]->intensity * 255; //m.getArgAsInt32(a);
       }
     }
   }
+  
+  for(int a = 0; a < totMagicPoints; a++)
+  {
+    //        magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
+    dmxData_[magicPoints[a]->getOutputPort()+1] =  magicPoints[a]->intensity * 255; //m.getArgAsInt32(a);
+  }
+  
 //  dmxData_[1] = 255;
 //  dmxData_[2] = 255;
 //  dmxData_[3] = 255;
@@ -181,6 +189,7 @@ void MagicLightCircle::updateOSC()
 //  dmxData_[24] = 255;
 
 }
+
 
 void MagicLightCircle::turnOnRandomLight()
 {
@@ -217,19 +226,52 @@ void MagicLightCircle::setup(int resolution)
 {
   radius = 200;
   totMagicPoints = resolution;
+  reverseLogic = true;
   for(int a = 0; a < resolution; a++)
   {
     addNewMagicPoint();
   }
-  
+
+//  magicPoints[0]->setOutputPort(0);
+//  magicPoints[1]->setOutputPort(1);
+//  magicPoints[3]->setOutputPort(3);
   int cont = 0;
   int startPosOffset = 20;
-  for(int a = startPosOffset;  a >  startPosOffset - totMagicPoints; a--)
+  for(int a = 0;  a < totMagicPoints; a++)
   {
     int pos = a;
-    if(pos < 0)
-      pos = pos+totMagicPoints;
-    magicPoints[pos]->setOutputPort(cont++);
+//    if(pos < 0)
+//      pos = pos+totMagicPoints;
+//    if(pos == 23)
+//      pos = 15;
+    int index = pos;
+    int outputPort = pos;
+    if(outputPort >= resolution)
+      outputPort = resolution - resolution;
+//    if(a > 11)
+//      outputPort = a + 3;
+    if(outputPort == 19)
+      outputPort = 15;
+//    if(a == 23)
+//      outputPort = 14;
+    
+//    outputPort += 0;
+    
+    if(outputPort > 14)
+      outputPort += 3;
+    
+    if(pos == 19)
+      outputPort = 15;
+
+//    if(outputPort > resolution)
+//      outputPort = outputPort - resolution;
+//    if(a == 21)
+//      outputPort = 0;
+//    if(a == 22)
+//      outputPort = 1;
+//    if(a == 23)
+//      outputPort = 2;
+    magicPoints[a]->setOutputPort(outputPort);
   }
   setupDMX();
   setupOSC();
@@ -248,6 +290,7 @@ void MagicLightCircle::addNewMagicPoint()
   p->setPos(pos);
   p->setId(id);
   magicPoints.push_back(p);
+  p->setup();
   p = NULL;
 }
 
@@ -279,38 +322,53 @@ void MagicLightCircle::updateSound()
   }
 }
 
+
+void MagicLightCircle::updateMagicPoints(ofVec3f point)
+{
+  ofVec2f pointWithNoZ = ofVec2f(point.x, point.y);
+  for(int a = 0; a < totMagicPoints; a++)
+  {
+    /// Se non ci sono i blob non faccio l'update... non so se è giusto...
+    magicPoints[a]->update(point, lightFadeOutSpeed, lightFadeInSpeed);
+    magicPoints[a]->radius = radius * percMaxDistanceCircle;
+    float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ);
+    if(!reverseLogic)
+    {
+      if((tempIntensity > magicPoints[a]->getIntensity())||useDepthForIntensity)
+        //    if((tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)||useDepthForIntensity)
+      {
+        if(magicPoints[a]->getActive())
+        {
+          // Testare... quando il blob sparisce e non riceve nuovi OSC, nel vector di blob rimangono comunque i dati. Magari fare un conteggio sul tempo in cui la posione rimane identica e se dura troppo, far morire il blog
+          //        cout << "BLOB " << i << " = " << _blobs[i].point << endl;
+          //        cout << float(_blobs[i].point.z/255) << endl;
+          magicPoints[a]->life = lightLife;
+          if(useDepthForIntensity)
+            magicPoints[a]->setDesiredIntensity(float(point.z/255));
+          else
+            magicPoints[a]->setDesiredIntensity(pointWithNoZ);
+        }
+      }
+    }
+    else
+    {
+      if(magicPoints[a]->reverseLogic&&magicPoints[a]->getActive())
+        magicPoints[a]->reverseLogic = false; // Attivare questo solo se la logica del reverseLogic è attiva
+    }
+    dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
+  }
+}
+
 void MagicLightCircle::update(vector<Blob> _blobs)
 {
   ofPoint center = ofPoint(radius, radius);
   for(int i = 0; i < _blobs.size(); i++)
   {
-   ofVec2f pointWithNoZ = ofVec2f(_blobs[i].point.x, _blobs[i].point.y);
-   for(int a = 0; a < totMagicPoints; a++)
-   {
-    /// Se non ci sono i blob non faccio l'update... non so se è giusto...
-    magicPoints[a]->update(_blobs[i].point);
-    magicPoints[a]->radius = radius * percMaxDistanceCircle;
-    float tempIntensity = magicPoints[a]->calculateIntensity(pointWithNoZ);
-    if((tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)||useDepthForIntensity)
-    {
-      if(magicPoints[a]->getActive())
-      {
-        // Testare... quando il blob sparisce e non riceve nuovi OSC, nel vector di blob rimangono comunque i dati. Magari fare un conteggio sul tempo in cui la posione rimane identica e se dura troppo, far morire il blog
-//        cout << "BLOB " << i << " = " << _blobs[i].point << endl;
-        cout << float(_blobs[i].point.z/255) << endl;
-        if(useDepthForIntensity)
-          magicPoints[a]->setIntensity(float(_blobs[i].point.z/255));
-        else
-          magicPoints[a]->setIntensity(pointWithNoZ);
-      }
-    }
-    if(!magicPoints[a]->getActive())
-      magicPoints[a]->intensity -= lightFadeOutSpeed;
-    if(magicPoints[a]->intensity < 0)
-      magicPoints[a]->intensity = 0;
-    dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
-   }
+    updateMagicPoints(_blobs[i].point);
   }
+  if(_blobs.size() == 0)
+    updateMagicPoints(ofVec3f(-10000));
+    
 }
 
 void MagicLightCircle::draw()
@@ -352,6 +410,7 @@ void MagicLightCircle::sendDMX()
   dmxData_[0] = 0;
   if ( ! dmxInterface_ || ! dmxInterface_->isOpen() ) {
     printf( "Not updating, enttec device is not open.\n");
+//    setupDMX();
   }
   else{
     //send the data to the dmx interface
