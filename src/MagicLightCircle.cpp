@@ -70,6 +70,36 @@ void MagicLightCircle::audioIn(float * input, int bufferSize, int nChannels)
 
 void MagicLightCircle::updateOSC()
 {
+//  magicPoints[0]->setIntensity(1);
+//  magicPoints[1]->setIntensity(1);
+//  magicPoints[2]->setIntensity(1);
+//  magicPoints[3]->setIntensity(1);
+//  magicPoints[4]->setIntensity(1);
+//  magicPoints[5]->setIntensity(1);
+//  magicPoints[6]->setIntensity(1);
+//  magicPoints[7]->setIntensity(1);
+//  magicPoints[8]->setIntensity(1);
+//  magicPoints[9]->setIntensity(1);
+//  magicPoints[10]->setIntensity(1);
+//  magicPoints[11]->setIntensity(1);
+//  
+//  magicPoints[12]->setIntensity(1);
+//  
+//  magicPoints[13]->setIntensity(1);
+//  magicPoints[14]->setIntensity(1);
+//  magicPoints[15]->setIntensity(1);
+//  magicPoints[16]->setIntensity(1);
+//  magicPoints[17]->setIntensity(1);
+//  magicPoints[18]->setIntensity(1);
+//  
+//  magicPoints[19]->setIntensity(1);
+//  magicPoints[20]->setIntensity(1); // Accende il 12
+//  
+//  
+//  magicPoints[21]->setIntensity(1);
+//  magicPoints[22]->setIntensity(1);
+//  magicPoints[23]->setIntensity(1);
+  
   while(receiver.hasWaitingMessages())
   {
     ofxOscMessage m;
@@ -125,6 +155,33 @@ void MagicLightCircle::updateOSC()
       }
     }
   }
+//  dmxData_[1] = 255;
+//  dmxData_[2] = 255;
+//  dmxData_[3] = 255;
+//  dmxData_[4] = 255;
+//  dmxData_[5] = 255;
+//  dmxData_[6] = 255;
+//  dmxData_[7] = 255;
+//  dmxData_[8] = 255;
+//  dmxData_[9] = 255;
+//  dmxData_[10] = 255;
+//  dmxData_[11] = 255;
+//  dmxData_[12] = 255;
+//  dmxData_[13] = 255;
+//  dmxData_[14] = 255;
+//  dmxData_[15] = 255;
+//  dmxData_[16] = 255;
+//  dmxData_[17] = 255;
+//  dmxData_[18] = 255;
+//  dmxData_[19] = 255;
+//  dmxData_[20] = 255;
+//  dmxData_[21] = 255;
+//  dmxData_[22] = 255;
+//  dmxData_[23] = 255;
+//  dmxData_[24] = 255;
+
+}
+
 void MagicLightCircle::turnOnRandomLight()
 {
   int count = 0;
