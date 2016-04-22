@@ -125,6 +125,30 @@ void MagicLightCircle::updateOSC()
       }
     }
   }
+void MagicLightCircle::turnOnRandomLight()
+{
+  int count = 0;
+  int selectedMagicPoint = -666;;
+  do
+  {
+    selectedMagicPoint = ofRandom(0, totMagicPoints);
+    count++;
+  }while(magicPoints[selectedMagicPoint]->getIntensity() > .1&&count < 100);
+  if(selectedMagicPoint != -666)
+    turnOnLight(selectedMagicPoint);
+}
+
+void MagicLightCircle::turnOnLight(int lightId, float newIntensityValue)
+{
+  if(lightId >= 0)
+  {
+    magicPoints[lightId]->life = lightLife;
+    magicPoints[lightId]->setActive(true);
+    magicPoints[lightId]->setDesiredIntensity(newIntensityValue);
+    magicPoints[lightId]->reverseLogic = reverseLogic;
+  }
+  else
+    ofLog(OF_LOG_WARNING, "lightId must not negative value!");
 }
 
 void MagicLightCircle::setCircleResolution(int num)
