@@ -250,6 +250,7 @@ void MagicLightCircle::setup(int resolution)
       outputPort = resolution - resolution;
 //    if(a > 11)
 //      outputPort = a + 3;
+//<<<<<<< HEAD
     if(outputPort == 19)
       outputPort = 15;
 //    if(a == 23)
@@ -271,6 +272,26 @@ void MagicLightCircle::setup(int resolution)
 //      outputPort = 1;
 //    if(a == 23)
 //      outputPort = 2;
+    
+/*=======
+    if(a == 23)
+      outputPort = 14;
+    outputPort += 3;
+    
+    if(outputPort > 11)
+      outputPort += 3;
+
+    if(a == 16)
+      outputPort = 14;
+//    if(outputPort > resolution)
+//      outputPort = outputPort - resolution;
+    if(a == 21)
+      outputPort = 0;
+    if(a == 22)
+      outputPort = 1;
+    if(a == 23)
+      outputPort = 2;
+>>>>>>> origin/master*/
     magicPoints[a]->setOutputPort(outputPort);
   }
   setupDMX();
@@ -337,6 +358,7 @@ void MagicLightCircle::updateMagicPoints(ofVec3f point)
       if((tempIntensity > magicPoints[a]->getIntensity())||useDepthForIntensity)
         //    if((tempIntensity > magicPoints[a]->getIntensity()&&_blobs[i].life>0)||useDepthForIntensity)
       {
+//<<<<<<< HEAD
         if(magicPoints[a]->getActive())
         {
           // Testare... quando il blob sparisce e non riceve nuovi OSC, nel vector di blob rimangono comunque i dati. Magari fare un conteggio sul tempo in cui la posione rimane identica e se dura troppo, far morire il blog
@@ -348,6 +370,15 @@ void MagicLightCircle::updateMagicPoints(ofVec3f point)
           else
             magicPoints[a]->setDesiredIntensity(pointWithNoZ);
         }
+/*=======
+        // Testare... quando il blob sparisce e non riceve nuovi OSC, nel vector di blob rimangono comunque i dati. Magari fare un conteggio sul tempo in cui la posione rimane identica e se dura troppo, far morire il blog
+//        cout << "BLOB " << i << " = " << _blobs[i].point << endl;
+//        cout << float(_blobs[i].point.z/255) << endl;
+        if(useDepthForIntensity)
+          magicPoints[a]->setIntensity(float(_blobs[i].point.z/255));
+        else
+          magicPoints[a]->setIntensity(pointWithNoZ);
+>>>>>>> origin/master*/
       }
     }
     else
