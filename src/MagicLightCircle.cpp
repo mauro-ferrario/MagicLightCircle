@@ -20,6 +20,16 @@ MagicLightCircle::~MagicLightCircle()
 void MagicLightCircle::setupOSC()
 {
   receiver.setup(12345);
+  mapToOfParameterFloatValue["lightLife"] = &lightLife;
+  mapToOfParameterFloatValue["lightFadeInSpeed"] = &lightFadeInSpeed;
+  mapToOfParameterFloatValue["lightFadeOutSpeed"] = &lightFadeOutSpeed;
+  mapToOfParameterFloatValue["percMaxDistanceCircle"] = &percMaxDistanceCircle;
+  
+
+  multipliers["lightLife"] = 500;
+  multipliers["lightFadeOutSpeed"] = 0.100;
+  multipliers["lightFadeInSpeed"] = 0.100;
+  multipliers["percMaxDistanceCircle"] = 1;
 }
 
 
@@ -65,6 +75,31 @@ void MagicLightCircle::updateOSC()
     ofxOscMessage m;
     receiver.getNextMessage(&m);
     string address = m.getAddress();
+    if(mapToOfParameterFloatValue[address] != NULL)
+    {
+      mapToOfParameterFloatValue[address]->set(m.getArgAsFloat(0) * multipliers[address]);
+    }
+    if(address == "/savePreset")
+    {
+      ((ofApp*)ofGetAppPtr())->saveGUIPreset();
+    }
+    if(address == "/changePreset")
+    {
+      ((ofApp*)ofGetAppPtr())->presetId = m.getArgAsInt32(0);
+    }
+    if(address == "/loadPreset")
+    {
+      ((ofApp*)ofGetAppPtr())->presetId = m.getArgAsInt32(0);
+      ((ofApp*)ofGetAppPtr())->loadGUIPreset(m.getArgAsInt32(0));
+    }
+    if(address == "/turnOnRandomLight")
+    {
+      turnOnRandomLight();
+    }
+    if(address == "/turnOnLight")
+    {
+      turnOnLight(m.getArgAsInt32(0));
+    }
     if(address.find("newPoint") <= 10)
     {
       int pointPos = ofToInt(address.substr(10,1));
