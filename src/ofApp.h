@@ -20,6 +20,16 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+    void  saveGUIPreset();
+    void loadGUIPreset(int id);
 		MagicLightCircle magicCircle;
     ofxPanel  gui;
+  ofParameter<int> presetId;
+  void handlerOSCMessage(ofxOscMessage &m);
+		ofTrueTypeFont	font;
+  bool useMinimalGUI;
+  
+  
+  vector<string> newLineString;
+  void addNewLine(string newLine);
 };
