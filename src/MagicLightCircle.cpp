@@ -146,9 +146,16 @@ void MagicLightCircle::turnOnLight(int lightId, float newIntensityValue)
 {
   if(lightId >= 0)
   {
-    magicPoints[lightId]->life = lightLife;
-    magicPoints[lightId]->setActive(true);
-    magicPoints[lightId]->setDesiredIntensity(newIntensityValue);
+    if(!reverseLogic)
+      magicPoints[lightId]->life = lightLife;
+    else
+      magicPoints[lightId]->life = 0;
+    if(!reverseLogic)
+      magicPoints[lightId]->setActive(true);
+    else
+      magicPoints[lightId]->setActive(false);
+    magicPoints[lightId]->setIntensity(0);
+    magicPoints[lightId]->setDesiredIntensity(1);
     magicPoints[lightId]->reverseLogic = reverseLogic;
   }
   else
@@ -180,9 +187,9 @@ void MagicLightCircle::setup(int resolution)
     if(outputPort >= resolution)
       outputPort = resolution - resolution;
     if(a == 23)
+      outputPort = 27;
     if(outputPort > 11)
       outputPort += 3;
-
     if(a == 16)
       outputPort = 14;
     magicPoints[a]->setOutputPort(outputPort);
@@ -217,6 +224,8 @@ void MagicLightCircle::addNewMagicPoint()
 
 void MagicLightCircle::update()
 {
+  if(lightLife < 1)
+    lightLife = 1;
   timerNoPoints++;
   if(timerNoPoints > 100 && blobs.size() > 0)
     blobs.clear();
@@ -277,11 +286,25 @@ void MagicLightCircle::updateMagicPoints(ofVec3f point)
             magicPoints[a]->setDesiredIntensity(pointWithNoZ);
         }
       }
+      else
+      {
+        if(reverseLogic)
+        {
+          if(useDepthForIntensity)
+            magicPoints[a]->setDesiredIntensity(float(point.z/255));
+          else
+            magicPoints[a]->setDesiredIntensity(pointWithNoZ);
+        }
+      }
     }
     else
     {
       if(magicPoints[a]->reverseLogic&&magicPoints[a]->getActive())
+      {
+        magicPoints[a]->life = 0;
+        magicPoints[a]->setDesiredIntensity(0);
         magicPoints[a]->reverseLogic = false; // Attivare questo solo se la logica del reverseLogic è attiva
+      }
     }
     dmxData_[magicPoints[a]->getOutputPort()+1] = magicPoints[a]->getIntensity()*255;
   }
@@ -334,6 +357,9 @@ void MagicLightCircle::setupDMX()
 
 void MagicLightCircle::sendDMX()
 {
+  for(int a = 0; a < totMagicPoints; a++)
+    dmxData_[magicPoints[a]->getOutputPort()+1] =  magicPoints[a]->intensity * 255;
+  
   //force first byte to zero (it is not a channel but DMX type info - start code)
   dmxData_[0] = 0;
   if ( ! dmxInterface_ || ! dmxInterface_->isOpen() ) {
