@@ -47,6 +47,8 @@ void MagicPoint::update(float lightFadeOutSpeed, float lightFadeInSpeed)
   {
     if(intensity < desiredIntensity)
       intensity += lightFadeInSpeed;
+    if(intensity > 1)
+      intensity = 1;
     else if(!active)
       life--;
   }
@@ -54,10 +56,18 @@ void MagicPoint::update(float lightFadeOutSpeed, float lightFadeInSpeed)
   {
     if(!reverseLogic)
     {
+      intensity -= lightFadeOutSpeed;
       if(intensity < 0)
       {
         intensity = 0;
       }
+    }
+    else
+    {
+      if(intensity < desiredIntensity)
+        intensity += lightFadeInSpeed;
+      if(intensity > 1)
+        intensity = 1;
     }
   }
 }
@@ -100,6 +110,7 @@ float MagicPoint::getDistance(ofVec2f blobPos)
 float MagicPoint::calculateIntensity(ofVec2f blobPos)
 {
   float distance = getDistance(blobPos);
+  if(distance > radius)
     return 0;
   distance = ofClamp(distance, 0, radius);
   return (1 - (distance/radius));
