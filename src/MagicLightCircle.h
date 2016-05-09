@@ -87,6 +87,7 @@ private:
   void                turnOnLight(int lightId, float newIntensityValue = 1);
   std::tr1::unordered_map<string, ofParameter<float>* > mapToOfParameterFloatValue;
   std::tr1::unordered_map<string, float >  multipliers;
+  int timerNoPoints;
   PixelMappingCircle  pixelMapping;
   void                setupPixelMapping();
 };

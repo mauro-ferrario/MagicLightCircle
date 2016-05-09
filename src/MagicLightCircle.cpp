@@ -116,6 +116,7 @@ void MagicLightCircle::updateOSC()
         blobs.push_back(tempBlob);
       else
         blobs[pointPos] = tempBlob;
+      timerNoPoints = 0;
     }
     if(address == "ControlLight" && useOSC)
     {
@@ -215,6 +216,9 @@ void MagicLightCircle::addNewMagicPoint()
 
 void MagicLightCircle::update()
 {
+  timerNoPoints++;
+  if(timerNoPoints > 100 && blobs.size() > 0)
+    blobs.clear();
   updateOSC();
   if(!useOSC)
     update(blobs);
