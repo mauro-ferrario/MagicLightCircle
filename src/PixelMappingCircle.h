@@ -23,11 +23,15 @@ public:
   void  draw(int x, int y);
   void  drawGUI();
   vector<int> values;
+  vector<int> order;
+  void reorder(int orderType, int perno);
+  void  startNewFunction(int newIdFunction, int perno);
+  void  startNewFunction(int perno);
   
 private:
   
   int   totPixel;
-  int   idFunction;
+//  int   idFunction;
   ofFbo fbo;
   void  drawFunction();
   ofVec2f  rectPos;
@@ -40,7 +44,11 @@ private:
   ofParameter<bool>   loadFunction;
   ofParameter<bool>   loop;
   ofParameter<bool>   active;
+  void                circularAnimation();
+  void                doubleSemiCircularAnimation();
+  void                idFunctionChanged(int& newIdFunction);
   ofxPanel  gui;
+  
 };
 
 #endif /* defined(__MagicLightCircle__PixelMappingCircle__) */
