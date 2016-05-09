@@ -122,6 +122,7 @@ void MagicLightCircle::updateOSC()
     {
       for(int a = 0; a < totMagicPoints; a++)
       {
+        magicPoints[a]->intensity = float(m.getArgAsInt32(a))/255.0;
       }
     }
   }
