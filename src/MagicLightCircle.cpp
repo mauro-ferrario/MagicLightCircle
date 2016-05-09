@@ -294,9 +294,16 @@ void MagicLightCircle::setup(int resolution)
 >>>>>>> origin/master*/
     magicPoints[a]->setOutputPort(outputPort);
   }
+  setupPixelMapping();
   setupDMX();
   setupOSC();
   setupAudio();
+  timerNoPoints = 0;
+}
+
+void MagicLightCircle::setupPixelMapping()
+{
+  pixelMapping.setup(totMagicPoints);
 }
 
 void MagicLightCircle::addNewMagicPoint()
@@ -322,6 +329,14 @@ void MagicLightCircle::update()
     update(blobs);
   if(useSound)
     updateSound();
+  if(usePixelMapping)
+  {
+    pixelMapping.update();
+    for(int a = 0; a < totMagicPoints; a++)
+    {
+      magicPoints[a]->intensity = float(pixelMapping.values[a]/255.0);
+    }
+  }
   sendDMX();
   checkLightInputControllerChanged();
 }
@@ -422,6 +437,7 @@ void MagicLightCircle::draw()
       blobs[a].life--;
     }
   }
+  pixelMapping.draw(10, 550);
   ofPopStyle();
 }
 
@@ -455,20 +471,31 @@ void MagicLightCircle::checkLightInputControllerChanged()
   {
     useOSC = false;
     useDepthForIntensity = false;
+    usePixelMapping = false;
   }
   else if(prevUseDepthForIntensity != useDepthForIntensity)
   {
     useOSC = false;
     useSound = false;
+    usePixelMapping = false;
   }
   else if(prevUseOSC != useOSC)
   {
     useDepthForIntensity = false;
     useSound = false;
   }  
+    usePixelMapping = false;
+  }
+  else if(prevUsePixelMapping != usePixelMapping)
+  {
+    useDepthForIntensity = false;
+    useSound = false;
+    prevUseOSC = false;
+  }
   prevUseDepthForIntensity = useDepthForIntensity;
   prevUseOSC = useOSC;
   prevUseSound = useSound;
+  prevUsePixelMapping = usePixelMapping;
 }
 
 ofParameterGroup* MagicLightCircle::getParameterGroup()
@@ -491,6 +518,7 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(useDepthForIntensity.set("Use Dept For Intensity", false));
+    magicLightParams->add(usePixelMapping.set("Use Pixel mapping", false));
     magicLightParams->add(useOSC.set("Use OSC For Intensity", false));
     magicLightParams->add(useSound.set("Use sound For Intensity", false));
     magicLightParams->add(reverseLogic.set("Reverse logic", false));

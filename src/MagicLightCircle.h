@@ -14,6 +14,7 @@
 #include "ofxOsc.h"
 #include "MagicPoint.h"
 #include<tr1/unordered_map>
+#include "PixelMappingCircle.h"
 
 #define DMX_DATA_LENGTH 513
 #define MAX_DURATION_FRAMES_BLOB_WITH_NO_INTERACTION 5
@@ -64,12 +65,14 @@ private:
   vector<Blob>        blobs;
   ofParameter<bool>   useDepthForIntensity;
   ofParameter<bool>   useOSC;
+  ofParameter<bool>   usePixelMapping;
   ofParameter<bool>   useSound;
   ofParameter<float>  audioMultiplier;
   ofParameterGroup*   magicLightParams;
   bool                prevUseDepthForIntensity;
   bool                prevUseOSC;
   bool                prevUseSound;
+  bool                prevUsePixelMapping;
   void                audioIn(float * input, int bufferSize, int nChannels);
   void                checkLightInputControllerChanged();
   void                updateSound();
@@ -85,6 +88,8 @@ private:
   std::tr1::unordered_map<string, ofParameter<float>* > mapToOfParameterFloatValue;
   std::tr1::unordered_map<string, float >  multipliers;
 
+  PixelMappingCircle  pixelMapping;
+  void                setupPixelMapping();
 };
 
 #endif /* defined(__MagicLightCircle__MagicLightCircle__) */
