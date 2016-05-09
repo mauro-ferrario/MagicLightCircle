@@ -48,7 +48,6 @@ void ofApp::draw(){
   }
 }
 
-
 void ofApp::addNewLine(string newLine)
 {
   newLineString.push_back(newLine);
