@@ -43,8 +43,6 @@ void MagicPoint::update(ofVec2f pos, float lightFadeOutSpeed, float lightFadeInS
 
 void MagicPoint::update(float lightFadeOutSpeed, float lightFadeInSpeed)
 {
-  // Prima la luce deve "morire", non avere più vita e poi passa
-  // all'else dove piano piano si spegne
   if(life > 0)
   {
     if(intensity < desiredIntensity)
@@ -56,11 +54,8 @@ void MagicPoint::update(float lightFadeOutSpeed, float lightFadeInSpeed)
   {
     if(!reverseLogic)
     {
-//      if(active)
-        intensity -= lightFadeOutSpeed;
       if(intensity < 0)
       {
-        reverseLogic = false;
         intensity = 0;
       }
     }
@@ -105,7 +100,6 @@ float MagicPoint::getDistance(ofVec2f blobPos)
 float MagicPoint::calculateIntensity(ofVec2f blobPos)
 {
   float distance = getDistance(blobPos);
-  if(distance > radius)  // Forse queste 2 righe sono superflue perchè il controllo avviene già fuori. Forse è per questo motivo che la luce si attiva rapidamente
     return 0;
   distance = ofClamp(distance, 0, radius);
   return (1 - (distance/radius));
