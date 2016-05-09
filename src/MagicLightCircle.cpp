@@ -394,7 +394,7 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     soundGroup.setName("Sound group");
     magicLightParams->setName("Magic Light Circle");
     magicLightParams->add(lightLife.set("Light life", 10,1, 500));
-    magicLightParams->add(lightFadeInSpeed.set("Fade In Speed", .050,0.000, 0.100));
+    magicLightParams->add(lightFadeInSpeed.set("Fade In Speed", .050,0.000, 0.080));
     magicLightParams->add(lightFadeOutSpeed.set("Fade Out Speed", .050,0.000, 0.100));
     magicLightParams->add(percMaxDistanceCircle.set("Max Distance Circle", .15,0, 1));
     magicLightParams->add(useDepthForIntensity.set("Use Dept For Intensity", false));
