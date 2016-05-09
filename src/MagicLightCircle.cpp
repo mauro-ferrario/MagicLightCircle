@@ -224,6 +224,12 @@ void MagicLightCircle::addNewMagicPoint()
 
 void MagicLightCircle::update()
 {
+  if(activePixelMappingFunction)
+  {
+    usePixelMapping = true;
+    pixelMapping.startNewFunction(pixelMappingPerno);
+    activePixelMappingFunction = false;
+  }
   if(lightLife < 1)
     lightLife = 1;
   timerNoPoints++;
@@ -342,6 +348,7 @@ void MagicLightCircle::draw()
     }
   }
   pixelMapping.draw(10, 550);
+  pixelMapping.drawGUI();
   ofPopStyle();
 }
 
@@ -429,6 +436,8 @@ ofParameterGroup* MagicLightCircle::getParameterGroup()
     magicLightParams->add(useSound.set("Use sound For Intensity", false));
     magicLightParams->add(reverseLogic.set("Reverse logic", false));
     magicLightParams->add(audioMultiplier.set("Audio Multiplier", 1.00,0.00, 5.00));
+    magicLightParams->add(activePixelMappingFunction.set("Active pixel mapping function", false));
+    magicLightParams->add(pixelMappingPerno.set("Pixel mapping perno", 0,0, totMagicPoints-1));
 //    magicLightParams->add(depthGroup);
 //    magicLightParams->add(oscGroup);
 //    magicLightParams->add(soundGroup);

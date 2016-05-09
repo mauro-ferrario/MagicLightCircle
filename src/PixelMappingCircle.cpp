@@ -65,7 +65,12 @@ void  PixelMappingCircle::draw()
   }
 }
 
-void PixelMappingCircle::drawFunction()
+void PixelMappingCircle::drawGUI()
+{
+  gui.draw();
+}
+
+
 {
   ofPushMatrix();
   ofTranslate(rectPos);
@@ -77,4 +82,30 @@ void PixelMappingCircle::drawFunction()
   ofRect(0, 0, 30, 30);
   ofPopStyle();
   ofPopMatrix();
+void PixelMappingCircle::setupGUI()
+{
+  gui.setup("Pixel Mapping GUI");
+  gui.setPosition(ofPoint(650,0));
+  gui.add(*getParameterGroup());
+}
+
+ofParameterGroup* PixelMappingCircle::getParameterGroup()
+{
+  if(!pixelMappingParams)
+  {
+    pixelMappingParams = new ofParameterGroup();
+  }
+  if(pixelMappingParams->getName() == "")
+  {
+    pixelMappingParams->setName("Pixel mapping");
+    pixelMappingParams->add(fadeOutSpeed.set("Fade out speed", 4,0, 255));
+    pixelMappingParams->add(colorSpeed.set("Color Speed", 4,0, 50));
+    pixelMappingParams->add(idFunction.set("id Function To Load", 0,0, 10));
+    pixelMappingParams->add(loadFunction.set("Load function",false));
+    pixelMappingParams->add(loop.set("Loop",false));
+    pixelMappingParams->add(active.set("Active", active));
+//    idFunction.addListener(this, &PixelMappingCircle::idFunctionChanged);
+
+  }
+  return pixelMappingParams;
 }

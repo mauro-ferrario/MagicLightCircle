@@ -68,6 +68,8 @@ private:
   ofParameter<bool>   usePixelMapping;
   ofParameter<bool>   useSound;
   ofParameter<float>  audioMultiplier;
+  ofParameter<int>    pixelMappingPerno;
+  ofParameter<bool>   activePixelMappingFunction;
   ofParameterGroup*   magicLightParams;
   bool                prevUseDepthForIntensity;
   bool                prevUseOSC;
